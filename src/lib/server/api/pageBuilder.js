@@ -1,6 +1,17 @@
 import { pb } from "$lib/server/pocketbase.js";
 import { dlog } from "$lib/common/dlog.js";
 import { parseCsvData } from "$lib/common/csvParser.js";
+import { config } from "$lib/common/config.js";
+
+function getFullFileUrl(record, fieldName) {
+  if (!record || !record[fieldName]) return null;
+  const fileName = record[fieldName];
+  if (fileName.startsWith("http")) return fileName;
+
+  const baseUrl = (config.pocketbase.filesUrl || "http://127.0.0.1:8090").replace(/\/$/, "");
+  const collection = record.collectionName || "unknown";
+  return `${baseUrl}/api/files/${collection}/${record.id}/${fileName}`;
+}
 
 export async function buildPage(filter, cleanSlug, currentPage = 1) {
   dlog("PB", "🔍 Поиск", { filter, cleanSlug, currentPage });
@@ -73,27 +84,19 @@ async function formatPageResponse(page, currentPage) {
       sectionData.parsedData = parseCsvData(sectionDef.data_fields);
 
       if (sectionDef.type === "hero") {
-        sectionData.items = await pb
-          .collection("section_items_hero")
-          .getFullList({ sort: "created" });
+        const items = await pb.collection("section_items_hero").getFullList({ sort: "created" });
+        sectionData.items = items.map(item => ({ ...item, image: getFullFileUrl(item, 'image') }));
       } else if (sectionDef.type === "products") {
-        // 5. Используем currentPage и лимит 6
-        const result = await pb
-          .collection("products")
-          .getList(currentPage, 6, { sort: "-created" });
-        sectionData.items = result.items;
-        sectionData.totalPages = Math.ceil(result.totalItems / 6); // Для компонента Pagination
+        const result = await pb.collection("products").getList(currentPage, 6, { sort: "-created" });
+        sectionData.items = result.items.map(item => ({ ...item, image: getFullFileUrl(item, 'image') }));
+        sectionData.totalPages = Math.ceil(result.totalItems / 6);
       } else if (sectionDef.type === "news") {
-        // 6. Используем currentPage и лимит 6 (исправлено с 3)
-        const result = await pb
-          .collection("news")
-          .getList(currentPage, 6, { sort: "-created" });
-        sectionData.items = result.items;
-        sectionData.totalPages = Math.ceil(result.totalItems / 6); // Для компонента Pagination
+        const result = await pb.collection("news").getList(currentPage, 6, { sort: "-created" });
+        sectionData.items = result.items.map(item => ({ ...item, image: getFullFileUrl(item, 'image') }));
+        sectionData.totalPages = Math.ceil(result.totalItems / 6);
       } else if (sectionDef.type === "partners") {
-        sectionData.items = await pb
-          .collection("section_items_partners")
-          .getFullList({ sort: "created" });
+        const items = await pb.collection("section_items_partners").getFullList({ sort: "created" });
+        sectionData.items = items.map(item => ({ ...item, logo: getFullFileUrl(item, 'logo') }));
       } else if (sectionDef.type === "form") {
         sectionData.items = [];
       }
@@ -113,7 +116,7 @@ async function formatPageResponse(page, currentPage) {
       title: page.heading || page.meta_title || "Страница",
       html: page.content || "",
       slug: page.slug,
-      image: page.image ? pb.files.getUrl(page, page.image) : null,
+      image: getFullFileUrl(page, 'image'),
       raw: page,
     },
     beforeContent,
@@ -128,7 +131,7 @@ function formatEntityResponse(entity, type) {
       title: entity.heading || entity.name || entity.meta_title || "Страница",
       html: entity.content || entity.description || "",
       slug: entity.slug,
-      image: entity.image ? pb.files.getUrl(entity, entity.image) : null,
+      image: getFullFileUrl(entity, 'image'),
       raw: entity,
       isEntity: true,
     },
