@@ -25,3 +25,5 @@ vite.config.ts.timestamp-*
 # logs
 **/*.log
 logs/
+
+vite.config.js
