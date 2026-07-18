@@ -1,0 +1,1 @@
+PORT=3300 ORIGIN=https://ifnew.ru pm2 start build/index.js --name interfeed_site
