@@ -1,0 +1,37 @@
+/* src/app.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400&display=swap');
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: emerald --default, dim --prefersdark;
+}
+
+@plugin "@tailwindcss/typography";
+
+[data-theme="emerald"] {
+  --color-primary: #1ab501;
+  --color-primary-content: #ffffff;
+  --color-secondary: #159001;
+  --color-secondary-content: #ffffff;
+  --color-accent: #0f6b00;
+  --color-accent-content: #ffffff;
+}
+
+[data-theme="dim"] {
+  --color-primary: #1ab501;
+  --color-primary-content: #ffffff;
+  --color-secondary: #159001;
+  --color-secondary-content: #ffffff;
+  --color-accent: #2dd405;
+  --color-accent-content: #000000;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
