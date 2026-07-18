@@ -28,3 +28,4 @@ logs/
 
 vite.config.js
 pnpm-lock.yaml
+ecosystem.config.js
