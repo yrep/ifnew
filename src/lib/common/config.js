@@ -1,6 +1,10 @@
 // src/lib/common/config.js
+
 export const config = {
-  pocketbase: { url: "http://127.0.0.1:8090" },
+  pocketbase: { 
+    url: import.meta.env.VITE_POCKETBASE_API_BASE_URL || "http://127.0.0.1:8090",
+    filesUrl: import.meta.env.VITE_POCKETBASE_FILE_API_BASE_URL || "http://127.0.0.1:8090",
+  },
   settings: {
     entities: { products: { perPage: 6 } },
     sections: { hero: { maxItems: 5 } },
