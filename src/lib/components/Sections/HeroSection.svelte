@@ -1,9 +1,13 @@
 <!-- src/lib/components/Sections/HeroSection.svelte -->
 <script>
   import Image from '$lib/components/Common/Image.svelte';
+  import { dlog } from '$lib/common/dlog.js';
+
   let { section } = $props();
   const items = $derived(section.items || []);
   
+  dlog(section, "Section HERO");
+
   let activeSlide = $state(0);
   let intervalId = $state(null);
   let touchStartX = $state(0);
@@ -69,7 +73,7 @@
       {#each items as item (item.id)}
         <div class="w-full flex-shrink-0 relative h-full">
           <Image
-            src={item.image ? `http://127.0.0.1:8090/api/files/section_items_hero/${item.id}/${item.image}` : ''}
+            src={item.image || ''}
             alt={item.title}
             class="w-full h-full"
             objectFit="cover"

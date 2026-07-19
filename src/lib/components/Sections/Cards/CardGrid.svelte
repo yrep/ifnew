@@ -39,7 +39,7 @@
       <a href={normalizeSlug(item.slug, 'product')} class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
         <figure class="aspect-[4/3] w-full bg-base-200">
           <Image 
-            src={item.image ? `http://127.0.0.1:8090/api/files/products/${item.id}/${item.image}` : ''} 
+            src={item.image || ''}
             alt={item.name} 
             class="w-full h-full"
             objectFit="cover"
@@ -57,7 +57,7 @@
       <a href={normalizeSlug(item.slug, 'news')} class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
         <figure class="aspect-[4/3] w-full bg-base-200">
           <Image 
-            src={item.image ? `http://127.0.0.1:8090/api/files/news/${item.id}/${item.image}` : ''} 
+            src={item.image || ''}
             alt={item.heading} 
             class="w-full h-full"
             objectFit="cover"

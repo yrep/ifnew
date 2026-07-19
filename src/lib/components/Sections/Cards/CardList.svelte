@@ -42,7 +42,7 @@
         {#if item.image}
           <figure class="w-1/3 sm:w-1/4 h-full min-h-[140px] bg-base-200">
             <Image 
-              src={`http://127.0.0.1:8090/api/files/news/${item.id}/${item.image}`} 
+              src={item.image || ''}
               alt={item.heading} 
               class="w-full h-full"
               objectFit="cover"
