@@ -18,11 +18,11 @@ export async function buildPage(filter, cleanSlug, currentPage = 1) {
       const publishedFilter = `(${filter}) && status="published"`;
       const page = await pb.collection("pages").getFirstListItem(publishedFilter);
 
-      dlog("PB", "✅ CMS найдена", { heading: page.heading, slug: page.slug });
+      dlog("PB", "✅ найдена", { heading: page.heading, slug: page.slug });
       return await formatPageResponse(page, currentPage);
     }
 
-    dlog("PB", "📦 2 уровень: ищем ТОЛЬКО в сущностях");
+    dlog("PB", "📦 2 уровень: entities");
     const lastPart = parts[parts.length - 1];
     let collectionName = null;
 
@@ -69,6 +69,7 @@ async function formatPageResponse(page, currentPage) {
 
       if (sectionDef.type === "hero") {
         const items = await pb.collection("section_items_hero").getFullList({ sort: "created" });
+        dlog('Items from db', items);
         sectionData.items = items.map(item => ({ 
           ...item, 
           image: getFullFileUrl(item, 'image'),
@@ -102,6 +103,8 @@ async function formatPageResponse(page, currentPage) {
         sectionData.items = [];
       }
     }
+    
+    dlog('Section data to pass', sectionData);
 
     if (ps.position === "before_content") {
       beforeContent.push(sectionData);
@@ -111,6 +114,9 @@ async function formatPageResponse(page, currentPage) {
       afterContent.push(sectionData);
     }
   }
+
+  dlog('Page image db', page.image);
+  dlog('Page image url', getFullFileUrl(page, 'image'));
 
   return {
     page: {
