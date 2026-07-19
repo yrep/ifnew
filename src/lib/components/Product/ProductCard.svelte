@@ -8,7 +8,7 @@
   <figure class="aspect-[4/3] w-full bg-base-200">
     <Image 
       src={product.image || ''} 
-      alt={product.title} 
+      alt={product.alt || product.title}
       class="w-full h-full"
       objectFit="cover"
     />

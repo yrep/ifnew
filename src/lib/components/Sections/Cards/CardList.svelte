@@ -16,11 +16,11 @@
     
     {#if type === 'partners'}
       <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow border border-base-200 flex-row overflow-hidden">
-        {#if item.logo}
+        {#if item.image}
           <figure class="w-1/4 sm:w-1/5 h-full min-h-[120px] bg-base-200 flex items-center justify-center p-4">
             <Image 
-              src={`http://127.0.0.1:8090/api/files/section_items_partners/${item.id}/${item.logo}`} 
-              alt={item.name} 
+              src={item.image} 
+              alt={item.alt || item.name || ''}
               class="w-full h-full"
               objectFit="contain"
             />
@@ -43,7 +43,7 @@
           <figure class="w-1/3 sm:w-1/4 h-full min-h-[140px] bg-base-200">
             <Image 
               src={item.image || ''}
-              alt={item.heading} 
+              alt={item.image_alt || item.heading} 
               class="w-full h-full"
               objectFit="cover"
             />

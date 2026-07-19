@@ -74,7 +74,7 @@
         <div class="w-full flex-shrink-0 relative h-full">
           <Image
             src={item.image || ''}
-            alt={item.title}
+            alt={item.image_alt || item.title}
             class="w-full h-full"
             objectFit="cover"
           />

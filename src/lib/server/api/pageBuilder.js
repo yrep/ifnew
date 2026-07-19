@@ -2,16 +2,7 @@ import { pb } from "$lib/server/pocketbase.js";
 import { dlog } from "$lib/common/dlog.js";
 import { parseCsvData } from "$lib/common/csvParser.js";
 import { config } from "$lib/common/config.js";
-
-function getFullFileUrl(record, fieldName) {
-  if (!record || !record[fieldName]) return null;
-  const fileName = record[fieldName];
-  if (fileName.startsWith("http")) return fileName;
-
-  const baseUrl = (config.pocketbase.filesUrl || "http://127.0.0.1:8090").replace(/\/$/, "");
-  const collection = record.collectionName || "unknown";
-  return `${baseUrl}/api/files/${collection}/${record.id}/${fileName}`;
-}
+import { getFullFileUrl, getAltText } from "$lib/common/fileUtils.js";
 
 export async function buildPage(filter, cleanSlug, currentPage = 1) {
   dlog("PB", "🔍 Поиск", { filter, cleanSlug, currentPage });
@@ -25,9 +16,7 @@ export async function buildPage(filter, cleanSlug, currentPage = 1) {
     if (level <= 1) {
       dlog("PB", "📄 1 уровень: ищем ТОЛЬКО в CMS");
       const publishedFilter = `(${filter}) && status="published"`;
-      const page = await pb
-        .collection("pages")
-        .getFirstListItem(publishedFilter);
+      const page = await pb.collection("pages").getFirstListItem(publishedFilter);
 
       dlog("PB", "✅ CMS найдена", { heading: page.heading, slug: page.slug });
       return await formatPageResponse(page, currentPage);
@@ -45,13 +34,8 @@ export async function buildPage(filter, cleanSlug, currentPage = 1) {
       throw new Error("Неизвестный раздел для сущности");
     }
 
-    const entity = await pb
-      .collection(collectionName)
-      .getFirstListItem(`slug~"${lastPart}"`);
-    dlog("PB", "✅ Сущность найдена", {
-      heading: entity.heading,
-      slug: entity.slug,
-    });
+    const entity = await pb.collection(collectionName).getFirstListItem(`slug~"${lastPart}"`);
+    dlog("PB", "✅ Сущность найдена", { heading: entity.heading, slug: entity.slug });
 
     return formatEntityResponse(entity, collectionName);
   } catch (err) {
@@ -85,18 +69,35 @@ async function formatPageResponse(page, currentPage) {
 
       if (sectionDef.type === "hero") {
         const items = await pb.collection("section_items_hero").getFullList({ sort: "created" });
-        sectionData.items = items.map(item => ({ ...item, image: getFullFileUrl(item, 'image') }));
+        sectionData.items = items.map(item => ({ 
+          ...item, 
+          image: getFullFileUrl(item, 'image'),
+          alt: getAltText(item, ['title'])
+        }));
       } else if (sectionDef.type === "products") {
         const result = await pb.collection("products").getList(currentPage, 6, { sort: "-created" });
-        sectionData.items = result.items.map(item => ({ ...item, image: getFullFileUrl(item, 'image') }));
+        sectionData.items = result.items.map(item => ({ 
+          ...item, 
+          image: getFullFileUrl(item, 'image'),
+          alt: getAltText(item, ['name', 'title'])
+        }));
         sectionData.totalPages = Math.ceil(result.totalItems / 6);
       } else if (sectionDef.type === "news") {
         const result = await pb.collection("news").getList(currentPage, 6, { sort: "-created" });
-        sectionData.items = result.items.map(item => ({ ...item, image: getFullFileUrl(item, 'image') }));
+        sectionData.items = result.items.map(item => ({ 
+          ...item, 
+          image: getFullFileUrl(item, 'image'),
+          alt: getAltText(item, ['heading', 'title'])
+        }));
         sectionData.totalPages = Math.ceil(result.totalItems / 6);
       } else if (sectionDef.type === "partners") {
+        // ВАЖНО: теперь здесь 'image' вместо 'logo'
         const items = await pb.collection("section_items_partners").getFullList({ sort: "created" });
-        sectionData.items = items.map(item => ({ ...item, logo: getFullFileUrl(item, 'logo') }));
+        sectionData.items = items.map(item => ({ 
+          ...item, 
+          image: getFullFileUrl(item, 'image'),
+          alt: getAltText(item, ['name', 'title'])
+        }));
       } else if (sectionDef.type === "form") {
         sectionData.items = [];
       }
@@ -117,6 +118,7 @@ async function formatPageResponse(page, currentPage) {
       html: page.content || "",
       slug: page.slug,
       image: getFullFileUrl(page, 'image'),
+      alt: getAltText(page, ['heading', 'meta_title', 'title']),
       raw: page,
     },
     beforeContent,
@@ -132,6 +134,7 @@ function formatEntityResponse(entity, type) {
       html: entity.content || entity.description || "",
       slug: entity.slug,
       image: getFullFileUrl(entity, 'image'),
+      alt: getAltText(entity, ['heading', 'name', 'meta_title', 'title']),
       raw: entity,
       isEntity: true,
     },

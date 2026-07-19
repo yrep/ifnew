@@ -12,11 +12,11 @@
       <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
         <div class="card-body">
           <div class="flex items-start gap-4">
-            {#if item.logo}
+            {#if item.image}
               <figure class="w-20 h-20 flex-shrink-0 bg-base-200 rounded-box overflow-hidden">
                 <Image 
-                  src={`http://127.0.0.1:8090/api/files/section_items_partners/${item.id}/${item.logo}`} 
-                  alt={item.name} 
+                  src={item.image} 
+                  alt={item.alt || item.name || ''}
                   class="w-full h-full"
                   objectFit="contain"
                 />
@@ -40,7 +40,7 @@
         <figure class="aspect-[4/3] w-full bg-base-200">
           <Image 
             src={item.image || ''}
-            alt={item.name} 
+            alt={item.alt || item.title} 
             class="w-full h-full"
             objectFit="cover"
           />
@@ -58,7 +58,7 @@
         <figure class="aspect-[4/3] w-full bg-base-200">
           <Image 
             src={item.image || ''}
-            alt={item.heading} 
+            alt={item.alt || item.heading}
             class="w-full h-full"
             objectFit="cover"
           />

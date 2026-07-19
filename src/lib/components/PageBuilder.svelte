@@ -24,7 +24,7 @@
   <div class="w-full">
     {#if data.page.image}
       <div class="mb-8 aspect-[21/9] w-full overflow-hidden rounded-box">
-        <Image src={data.page.image} alt={data.page.title} objectFit="cover" />
+        <Image src={data.page.image} alt={data.page.alt || data.page.title} objectFit="cover" />
       </div>
     {/if}
     
