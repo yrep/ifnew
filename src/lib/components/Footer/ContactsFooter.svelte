@@ -2,9 +2,9 @@
 <script>
   import { formatPhone } from "$lib/common/strings.js";
 
-  const address = "г. Москва, ул. Промышленная, 10";
-  const phone = "+74951234567";
-  const email = "info@ifnew.ru";
+  const address = "Москва, ул. Шоссе Энтузиастов, 19";
+  const phone = "+7 (495) 150-22-86";
+  const email = "interfeed.russia@gmail.com";
 </script>
 
 <div>
