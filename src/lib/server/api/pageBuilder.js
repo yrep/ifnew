@@ -84,7 +84,7 @@ async function formatPageResponse(page, currentPage) {
         }));
         sectionData.totalPages = Math.ceil(result.totalItems / 6);
       } else if (sectionDef.type === "news") {
-        const result = await pb.collection("news").getList(currentPage, 6, { sort: "-created" });
+        const result = await pb.collection("news").getList(currentPage, 6, { sort: "-display_date" });
         sectionData.items = result.items.map(item => ({ 
           ...item, 
           image: getFullFileUrl(item, 'image'),
@@ -92,7 +92,6 @@ async function formatPageResponse(page, currentPage) {
         }));
         sectionData.totalPages = Math.ceil(result.totalItems / 6);
       } else if (sectionDef.type === "partners") {
-        // ВАЖНО: теперь здесь 'image' вместо 'logo'
         const items = await pb.collection("section_items_partners").getFullList({ sort: "created" });
         sectionData.items = items.map(item => ({ 
           ...item, 
