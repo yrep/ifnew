@@ -50,8 +50,8 @@
           </figure>
         {/if}
         <div class="card-body flex-1 justify-center">
-          {#if item.created}
-            <span class="text-xs text-base-content/60 mb-1 font-medium">{formatDate(item.created)}</span>
+          {#if item.display_date}
+            <span class="text-xs text-base-content/60 mb-1 font-medium">{formatDate(item.display_date)}</span>
           {/if}
           <h3 class="card-title text-lg sm:text-xl text-primary">{item.heading}</h3>
           {#if item.excerpt}
