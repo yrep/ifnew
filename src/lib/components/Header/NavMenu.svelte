@@ -86,7 +86,7 @@
               <a
                 href={p.slug}
                 class="text-2xl font-semibold block py-2 hover:text-primary transition-colors"
-                class:text-primary={isActivePage(currentPath, p.slug)}
+                class:text-perimary={isActivePage(currentPath, p.slug)}
                 onclick={closeMenu}
               >
                 {p.title}
@@ -98,3 +98,10 @@
     </div>
   </div>
 {/if}
+
+<style>
+.mobile-nav a.active,
+.menu a.active {
+  color: var(--color-secondary) !important;
+}
+</style>

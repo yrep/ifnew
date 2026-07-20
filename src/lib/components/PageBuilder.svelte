@@ -28,7 +28,7 @@
       </div>
     {/if}
     
-    <h1 class="text-2xl sm:text-4xl md:text-4xl font-bold mb-6 break-words hyphens-auto">
+    <h1 class="text-2xl sm:text-4xl md:text-4xl font-bold mb-6 break-words hyphens-auto text-secondary">
       {data.page.title}
     </h1>
     {#if data.page.display_date}

@@ -11,18 +11,20 @@
 [data-theme="emerald"] {
   --color-primary: #1ab501;
   --color-primary-content: #ffffff;
-  --color-secondary: #159001;
+  --color-secondary: #1E7B12;
   --color-secondary-content: #ffffff;
-  --color-accent: #0f6b00;
+  --color-accent: #208710;
   --color-accent-content: #ffffff;
+  --s: 0.60 0.20 140deg;   /* format oklch */
+  --fallback-s: #1E7B12;
 }
 
 [data-theme="dim"] {
   --color-primary: #1ab501;
   --color-primary-content: #ffffff;
-  --color-secondary: #159001;
+  --color-secondary: #1E7B12;
   --color-secondary-content: #ffffff;
-  --color-accent: #2dd405;
+  --color-accent: #3FC11F;
   --color-accent-content: #000000;
 }
 
