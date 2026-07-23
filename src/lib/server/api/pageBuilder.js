@@ -4,8 +4,8 @@ import { parseCsvData } from "$lib/common/csvParser.js";
 import { config } from "$lib/common/config.js";
 import { getFullFileUrl, getAltText } from "$lib/common/fileUtils.js";
 
-export async function buildPage(filter, cleanSlug, currentPage = 1) {
-  dlog("PB", "🔍 Поиск", { filter, cleanSlug, currentPage });
+export async function buildPage(filter, cleanSlug, currentPage = 1, categorySlug = null) {
+  dlog("PB", "Search", { filter, cleanSlug, currentPage, categorySlug });
 
   try {
     const parts = cleanSlug
@@ -14,15 +14,15 @@ export async function buildPage(filter, cleanSlug, currentPage = 1) {
     const level = parts.length;
 
     if (level <= 1) {
-      dlog("PB", "📄 1 уровень: ищем ТОЛЬКО в CMS");
+      dlog("PB", "Level 1: CMS only");
       const publishedFilter = `(${filter}) && status="published"`;
       const page = await pb.collection("pages").getFirstListItem(publishedFilter);
 
-      dlog("PB", "✅ найдена", { heading: page.heading, slug: page.slug });
-      return await formatPageResponse(page, currentPage);
+      dlog("PB", "Found", { heading: page.heading, slug: page.slug });
+      return await formatPageResponse(page, currentPage, categorySlug);
     }
 
-    dlog("PB", "📦 2 уровень: entities");
+    dlog("PB", "Level 2: entities");
     const lastPart = parts[parts.length - 1];
     let collectionName = null;
 
@@ -31,20 +31,24 @@ export async function buildPage(filter, cleanSlug, currentPage = 1) {
     else if (cleanSlug.includes("stati")) collectionName = "articles";
 
     if (!collectionName) {
-      throw new Error("Неизвестный раздел для сущности");
+      throw new Error("Unknown entity section");
     }
 
-    const entity = await pb.collection(collectionName).getFirstListItem(`slug~"${lastPart}"`);
-    dlog("PB", "✅ Сущность найдена", { heading: entity.heading, slug: entity.slug });
+    const expandFields = collectionName === "products" ? "category" : "";
+    const entity = await pb.collection(collectionName).getFirstListItem(`slug~"${lastPart}"`, {
+      expand: expandFields
+    });
+    
+    dlog("PB", "Entity found", { heading: entity.heading, slug: entity.slug });
 
     return formatEntityResponse(entity, collectionName);
   } catch (err) {
-    dlog("PB-ERR", "❌ Ошибка", { message: err.message });
-    throw new Error("Не удалось загрузить страницу: " + err.message);
+    dlog("PB-ERR", "Error", { message: err.message });
+    throw new Error("Failed to load page: " + err.message);
   }
 }
 
-async function formatPageResponse(page, currentPage) {
+async function formatPageResponse(page, currentPage, categorySlug = null) {
   const pageSections = await pb.collection("page_sections").getFullList({
     filter: `page="${page.id}"`,
     expand: "section",
@@ -62,6 +66,7 @@ async function formatPageResponse(page, currentPage) {
       parsedData: {},
       hasMore: false,
       totalPages: 1,
+      viewMode: "default",
     };
 
     if (sectionDef) {
@@ -69,41 +74,72 @@ async function formatPageResponse(page, currentPage) {
 
       if (sectionDef.type === "hero") {
         const items = await pb.collection("section_items_hero").getFullList({ sort: "created" });
-        dlog('Items from db', items);
+        dlog("Items from db", items);
         sectionData.items = items.map(item => ({ 
           ...item, 
-          image: getFullFileUrl(item, 'image'),
-          alt: getAltText(item, ['title'])
+          image: getFullFileUrl(item, "image"),
+          alt: getAltText(item, ["title"])
         }));
       } else if (sectionDef.type === "products") {
-        const result = await pb.collection("products").getList(currentPage, 6, { sort: "-created" });
-        sectionData.items = result.items.map(item => ({ 
-          ...item, 
-          image: getFullFileUrl(item, 'image'),
-          alt: getAltText(item, ['name', 'title'])
-        }));
-        sectionData.totalPages = Math.ceil(result.totalItems / 6);
+        if (categorySlug) {
+          try {
+            const catRecord = await pb.collection("product_categories").getFirstListItem(`slug="${categorySlug}"`);
+            const result = await pb.collection("products").getList(currentPage, 6, { 
+              filter: `status="published" && category="${catRecord.id}"`,
+              sort: "-created" 
+            });
+            sectionData.items = result.items.map(item => ({ 
+              ...item, 
+              image: getFullFileUrl(item, "image"),
+              alt: getAltText(item, ["name", "title"])
+            }));
+            sectionData.totalPages = Math.ceil(result.totalItems / 6);
+            sectionData.viewMode = "grid";
+          } catch (e) {
+            sectionData.items = [];
+            sectionData.totalPages = 0;
+            sectionData.viewMode = "grid";
+          }
+        } else {
+          const items = await pb.collection("products").getFullList({ 
+            filter: `status="published"`,
+            expand: "category",
+            sort: "-created"
+          });
+          sectionData.items = items.map(item => ({ 
+            ...item, 
+            category: item.expand?.category || null,
+            image: getFullFileUrl(item, "image"),
+            alt: getAltText(item, ["name", "title"])
+          }));
+          sectionData.viewMode = "list";
+        }
       } else if (sectionDef.type === "news") {
-        const result = await pb.collection("news").getList(currentPage, 6, { sort: "-display_date" });
+        const result = await pb.collection("news").getList(currentPage, 6, { 
+          filter: `status="published"`,
+          sort: "-display_date" 
+        });
         sectionData.items = result.items.map(item => ({ 
           ...item, 
-          image: getFullFileUrl(item, 'image'),
-          alt: getAltText(item, ['heading', 'title'])
+          image: getFullFileUrl(item, "image"),
+          alt: getAltText(item, ["heading", "title"])
         }));
         sectionData.totalPages = Math.ceil(result.totalItems / 6);
       } else if (sectionDef.type === "partners") {
-        const items = await pb.collection("section_items_partners").getFullList({ sort: "created" });
+        const items = await pb.collection("section_items_partners").getFullList({ 
+          sort: "created" 
+        });
         sectionData.items = items.map(item => ({ 
           ...item, 
-          image: getFullFileUrl(item, 'image'),
-          alt: getAltText(item, ['name', 'title'])
+          image: getFullFileUrl(item, "image"),
+          alt: getAltText(item, ["name", "title"])
         }));
       } else if (sectionDef.type === "form") {
         sectionData.items = [];
       }
     }
     
-    dlog('Section data to pass', sectionData);
+    dlog("Section data to pass", sectionData);
 
     if (ps.position === "before_content") {
       beforeContent.push(sectionData);
@@ -114,16 +150,16 @@ async function formatPageResponse(page, currentPage) {
     }
   }
 
-  dlog('Page image db', page.image);
-  dlog('Page image url', getFullFileUrl(page, 'image'));
+  dlog("Page image db", page.image);
+  dlog("Page image url", getFullFileUrl(page, "image"));
 
   return {
     page: {
-      title: page.heading || page.meta_title || "Страница",
+      title: page.heading || page.meta_title || "Page",
       html: page.content || "",
       slug: page.slug,
-      image: getFullFileUrl(page, 'image'),
-      alt: getAltText(page, ['heading', 'meta_title', 'title']),
+      image: getFullFileUrl(page, "image"),
+      alt: getAltText(page, ["heading", "meta_title", "title"]),
       raw: page,
     },
     beforeContent,
@@ -135,11 +171,11 @@ async function formatPageResponse(page, currentPage) {
 function formatEntityResponse(entity, type) {
   return {
     page: {
-      title: entity.heading || entity.name || entity.meta_title || "Страница",
+      title: entity.heading || entity.name || entity.meta_title || "Page",
       html: entity.content || entity.description || "",
       slug: entity.slug,
-      image: getFullFileUrl(entity, 'image'),
-      alt: getAltText(entity, ['heading', 'name', 'meta_title', 'title']),
+      image: getFullFileUrl(entity, "image"),
+      alt: getAltText(entity, ["heading", "name", "meta_title", "title"]),
       raw: entity,
       isEntity: true,
     },

@@ -78,7 +78,7 @@
             class="w-full h-full"
             objectFit="cover"
           />
-          <div class="absolute inset-0 bg-gradient-to-t from-base-100 via-base-100/40 to-transparent"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent"></div>
           
           <div class="absolute bottom-0 left-0 p-6 sm:p-12 w-full">
             <h2 class="text-3xl font-bold sm:text-5xl text-base-content drop-shadow-md">{item.title}</h2>

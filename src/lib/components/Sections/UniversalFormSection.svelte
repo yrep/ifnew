@@ -128,7 +128,7 @@
     </div>
   {/if}
 
-    <div class="mx-auto max-w-2xl rounded-box border border-base-200 bg-base-100 p-6 shadow-sm">
+    <div class="mx-auto max-w-2xl rounded-box border border-base-200 bg-white p-6 shadow-sm">
     {#if section.expand?.section?.show_heading_excerpt}
       <h3 class="mb-6 text-2xl font-bold text-center">{config.title}</h3>
     {/if}

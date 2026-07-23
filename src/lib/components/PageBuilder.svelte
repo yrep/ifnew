@@ -7,7 +7,8 @@
   let { data } = $props();
 </script>
 
-<main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 py-8">
+<!-- Классы max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 гарантируют выравнивание с шапкой -->
+<main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 py-8 bg-neutral-content">
 
   <Breadcrumbs currentTitle={data.page.title} />
 
