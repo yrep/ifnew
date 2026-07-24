@@ -1,11 +1,22 @@
 <script>
+  import { onMount } from 'svelte';
   import LogoUpper from "$lib/components/Common/LogoUpper.svelte";
   import LogoLower from "$lib/components/Common/LogoLower.svelte";
   import NavMenu from "./NavMenu.svelte";
   import ContactBar from "./ContactBar.svelte";
+
+  let isScrolled = $state(false);
+
+  onMount(() => {
+    const handleScroll = () => {
+      isScrolled = window.scrollY > 0;
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  });
 </script>
 
-<header class="sticky top-0 z-40 shadow-sm">
+<header class="sticky top-0 z-40 shadow-sm transition-all duration-200 {isScrolled ? 'bg-white/80' : ''}">
   <!-- mob -->
   <div class="md:hidden bg-white border-b border-base-200">
     <div class="max-w-7xl mx-auto px-4 flex h-20 justify-between items-end gap-4 pb-3">
@@ -18,7 +29,7 @@
   </div>
   
   <!-- desktop -->
-  <div class="hidden md:grid md:grid-cols-[0.5rem_auto_0.5rem_1fr_1fr_0.5rem] md:grid-rows-2 max-w-7xl mx-auto">
+  <div class="hidden md:grid md:grid-cols-[0.5rem_auto_0.5rem_1fr_1fr_0.5rem] md:grid-rows-[80px_32px] max-w-7xl mx-auto h-fit">
     
     <!-- white -->
     <div class="col-span-1 bg-white h-20"></div>
