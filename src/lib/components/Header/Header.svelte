@@ -17,9 +17,10 @@
 </script>
 
 <header class="sticky top-0 z-40 shadow-sm transition-all duration-200 {isScrolled ? 'bg-white/80' : ''}">
-  <!-- mob -->
+  
+  <!-- mobile -->
   <div class="md:hidden bg-white border-b border-base-200">
-    <div class="max-w-7xl mx-auto px-4 flex h-20 justify-between items-end gap-4 pb-3">
+    <div class="max-w-7xl mx-auto px-4 flex h-fit justify-between items-end gap-4 py-3">
       <div class="flex flex-col leading-none">
         <LogoUpper class="h-8 w-auto" />
         <LogoLower class="h-4 w-auto" />
@@ -29,30 +30,29 @@
   </div>
   
   <!-- desktop -->
-  <div class="hidden md:grid md:grid-cols-[0.5rem_auto_0.5rem_1fr_1fr_0.5rem] md:grid-rows-[80px_32px] max-w-7xl mx-auto h-fit">
+  <div class="hidden md:block">
     
-    <!-- white -->
-    <div class="col-span-1 bg-white h-20"></div>
-    <div class="col-span-1 bg-white h-20 flex items-end justify-center pb-0">
-      <LogoUpper class="h-16 w-auto" />
+    <div class="bg-white w-full">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-[200px_1fr] h-fit">
+        <div class="bg-white flex items-end">
+          <LogoUpper class="h-16 w-auto block" />
+        </div>
+        <div class="flex items-center justify-end">
+          <NavMenu />
+        </div>
+      </div>
     </div>
-    <div class="col-span-1 bg-white h-20"></div>
-    <div class="col-span-2 bg-white h-20 flex items-center justify-end px-4">
-      <NavMenu />
+
+    <div class="bg-accent w-full">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-[200px_1fr] h-fit">
+        <div class="bg-white flex items-start">
+          <LogoLower class="h-8 w-auto block" />
+        </div>
+        <div class="flex items-center justify-end">
+          <ContactBar />
+        </div>
+      </div>
     </div>
-    <div class="col-span-1 bg-white h-20"></div>
-    
-    <!-- green -->
-    <div class="col-span-1 bg-accent h-8"></div>
-    <div class="col-span-1 bg-white h-8 flex items-start justify-center pt-0">
-      <LogoLower class="h-8 w-auto" />
-    </div>
-    <div class="col-span-1 bg-accent h-8"></div>
-    <div class="col-span-1 bg-accent h-8"></div>
-    <div class="col-span-1 bg-accent h-8 flex items-center justify-end px-4">
-      <ContactBar />
-    </div>
-    <div class="col-span-1 bg-accent h-8"></div>
-    
+
   </div>
 </header>
