@@ -18,7 +18,7 @@
 
 <header class="sticky top-0 z-40 shadow-sm transition-all duration-200 {isScrolled ? 'bg-white/80' : ''}">
   
-  <!-- mobile -->
+  <!-- mobile  -->
   <div class="md:hidden bg-white border-b border-base-200">
     <div class="max-w-7xl mx-auto px-4 flex h-fit justify-between items-end gap-4 py-3">
       <div class="flex flex-col leading-none">
