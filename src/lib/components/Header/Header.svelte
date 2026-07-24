@@ -1,32 +1,47 @@
 <script>
-  import Logo from "$lib/components/Common/Logo.svelte";
+  import LogoUpper from "$lib/components/Common/LogoUpper.svelte";
+  import LogoLower from "$lib/components/Common/LogoLower.svelte";
   import NavMenu from "./NavMenu.svelte";
   import ContactBar from "./ContactBar.svelte";
 </script>
 
 <header class="sticky top-0 z-40 shadow-sm">
-  <div class="md:hidden bg-white border-b border-base-200 relative">
+  <!-- mob -->
+  <div class="md:hidden bg-white border-b border-base-200">
     <div class="max-w-7xl mx-auto px-4 flex h-20 justify-between items-end gap-4 pb-3">
-      <Logo class="h-12 w-auto text-base-content" />
+      <div class="flex flex-col leading-none">
+        <LogoUpper class="h-8 w-auto" />
+        <LogoLower class="h-4 w-auto" />
+      </div>
       <NavMenu />
     </div>
   </div>
   
-  <div class="hidden md:block relative">
-    <div class="bg-white h-20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end items-center h-full">
-        <NavMenu />
-      </div>
-    </div>
+  <!-- desktop -->
+  <div class="hidden md:grid md:grid-cols-[0.5rem_auto_0.5rem_1fr_1fr_0.5rem] md:grid-rows-2 max-w-7xl mx-auto">
     
-    <div class="bg-accent h-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end items-center h-full">
-        <ContactBar />
-      </div>
+    <!-- white -->
+    <div class="col-span-1 bg-white h-20"></div>
+    <div class="col-span-1 bg-white h-20 flex items-end justify-center pb-0">
+      <LogoUpper class="h-16 w-auto" />
     </div>
+    <div class="col-span-1 bg-white h-20"></div>
+    <div class="col-span-2 bg-white h-20 flex items-center justify-end px-4">
+      <NavMenu />
+    </div>
+    <div class="col-span-1 bg-white h-20"></div>
     
-    <div class="absolute -bottom-2 left-4 sm:left-6 lg:left-8 z-10">
-      <Logo class="h-[120px] w-auto text-white" />
+    <!-- green -->
+    <div class="col-span-1 bg-accent h-8"></div>
+    <div class="col-span-1 bg-white h-8 flex items-start justify-center pt-0">
+      <LogoLower class="h-8 w-auto" />
     </div>
+    <div class="col-span-1 bg-accent h-8"></div>
+    <div class="col-span-1 bg-accent h-8"></div>
+    <div class="col-span-1 bg-accent h-8 flex items-center justify-end px-4">
+      <ContactBar />
+    </div>
+    <div class="col-span-1 bg-accent h-8"></div>
+    
   </div>
 </header>

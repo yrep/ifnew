@@ -21,7 +21,7 @@
   --color-primary-content: #ffffff;
   --color-secondary: #4f575c; /* Pantone 425 – СЕРЫЙ для заголовков! */
   --color-secondary-content: #ffffff;
-  --color-accent: #00b050;    /* Pantone 354 – зелёный акцент */
+  --color-accent: #19b200;
   --color-accent-content: #ffffff;
   --color-neutral: #767879;   /* Pantone 424 */
   --color-neutral-content: #ffffff;
@@ -89,6 +89,7 @@ html, body {
   font-family: var(--font-sans);
   font-size: 16px;
   font-weight: 300;
+  font-feature-settings: "lnum" on;
 }
 
 h1 {
