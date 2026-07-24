@@ -1,17 +1,11 @@
 <script>
   import CardGrid from './Cards/CardGrid.svelte';
-  import Pagination from '$lib/components/Common/Pagination.svelte';
   import { normalizeSlug } from '$lib/common/slugChecker.js';
-  import { page } from '$app/state';
   
   let { section } = $props();
   const sectionDef = $derived(section.expand?.section || {});
   const items = $derived(section.items || []);
   const viewMode = $derived(section.viewMode || 'list');
-  
-  const currentPage = $derived(parseInt(page.url.searchParams.get('page') || '1', 10));
-  const totalPages = $derived(section.totalPages || 1);
-  const basePath = $derived(page.url.pathname);
 
   let expandedCats = $state([]);
 
@@ -54,13 +48,13 @@
   {/if}
 
   {#if viewMode === 'grid'}
+    <!-- for category -->
     <CardGrid items={items} type="products" />
-    {#if totalPages > 1}
-      <Pagination {currentPage} {totalPages} {basePath} />
-    {/if}
+    
   {:else}
-    <div class="bg-white rounded-box shadow-md w-full max-w-4xl mx-auto border border-gray-200 overflow-hidden">
-      
+
+    <!--  list -->
+    <div class="bg-white rounded-box shadow-md w-full max-w-4xl mx-auto border border-gray-200 overflow-hidden mb-16">
       {#if grouped.noCategory.length > 0}
         {#each grouped.noCategory as item}
           <a href={normalizeSlug(item.slug, 'product')} class="block px-6 py-3 hover:bg-gray-50 transition-colors border-b border-gray-200 last:border-0">
@@ -115,6 +109,12 @@
           {/if}
         </div>
       {/each}
+    </div>
+
+    <!-- grid -->
+    <div class="w-full">
+      <h3 class="text-2xl font-bold text-center mb-8 text-secondary">Каталог продукции</h3>
+      <CardGrid items={items} type="products" />
     </div>
   {/if}
 </section>
