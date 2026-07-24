@@ -86,15 +86,18 @@ async function formatPageResponse(page, currentPage, categorySlug = null) {
             const catRecord = await pb.collection("product_categories").getFirstListItem(`slug="${categorySlug}"`);
             const result = await pb.collection("products").getList(currentPage, 6, { 
               filter: `status="published" && category="${catRecord.id}"`,
+              expand: "category",
               sort: "-created" 
             });
             sectionData.items = result.items.map(item => ({ 
               ...item, 
+              category: item.expand?.category || catRecord,
               image: getFullFileUrl(item, "image"),
               alt: getAltText(item, ["name", "title"])
             }));
             sectionData.totalPages = Math.ceil(result.totalItems / 6);
             sectionData.viewMode = "grid";
+            sectionData.categoryName = catRecord.name;
           } catch (e) {
             sectionData.items = [];
             sectionData.totalPages = 0;

@@ -86,7 +86,7 @@
               <p class="mt-4 max-w-2xl text-lg sm:text-xl text-base-content/90 drop-shadow-sm">{item.excerpt}</p>
             {/if}
             {#if item.cta_link}
-              <a href={item.cta_link} class="btn btn-primary mt-6 shadow-lg">
+              <a href={item.cta_link} class="btn btn-accent mt-6 shadow-lg">
                 {item.cta_btn_text || 'Подробнее'}
               </a>
             {/if}

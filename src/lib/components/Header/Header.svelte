@@ -45,7 +45,7 @@
 
     <div class="bg-accent w-full">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-[200px_1fr] h-fit">
-        <div class="bg-white flex items-start">
+        <div class="bg-white flex items-center justify-center h-full w-full">
           <LogoLower class="h-8 w-auto block" />
         </div>
         <div class="flex items-center justify-end">
