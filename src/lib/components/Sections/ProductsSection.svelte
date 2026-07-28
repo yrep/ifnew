@@ -17,7 +17,7 @@
   const isGridMode = $derived(sectionCode === 'products_grid_main');
 </script>
 
-<section class="py-8 w-full">
+<section class="py-2 w-full">
   {#if sectionDef.show_heading_excerpt && !currentCategory}
     <div class="mb-8 text-center">
       <h2 class="text-3xl font-bold">{sectionDef.heading}</h2>

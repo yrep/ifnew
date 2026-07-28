@@ -22,14 +22,14 @@
     {/if}
   {/each}
 
-  <div class="w-full">
+  <div class="w-full mb-2">
     {#if data.page.image}
-      <div class="mb-8 aspect-[21/9] w-full overflow-hidden rounded-box">
+      <div class="mb-4 aspect-[21/9] w-full overflow-hidden rounded-box">
         <Image src={data.page.image} alt={data.page.alt || data.page.title} objectFit="cover" />
       </div>
     {/if}
     
-    <h1 class="text-2xl sm:text-4xl md:text-4xl font-bold mb-6 break-words hyphens-auto text-secondary">
+    <h1 class="text-2xl sm:text-4xl md:text-4xl font-bold mb-2 break-words hyphens-auto text-secondary">
       {data.page.title}
     </h1>
     {#if data.page.display_date}

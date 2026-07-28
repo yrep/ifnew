@@ -2,7 +2,7 @@
   let { html = '', class: className = '' } = $props();
 </script>
 
-<div class="prose prose-invert max-w-none {className}">
+<div class="prose prose-invert max-w-none -mb-6 {className}">
   {@html html}
 </div>
 
