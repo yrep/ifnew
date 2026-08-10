@@ -128,7 +128,7 @@ async function formatPageResponse(page, currentPage, categorySlug = null) {
           alt: getAltText(item, ["heading", "title"])
         }));
         sectionData.totalPages = Math.ceil(result.totalItems / 6);
-      } } else if (sectionDef.type === "articles") {
+      } else if (sectionDef.type === "articles") {
         const result = await pb.collection("articles").getList(currentPage, 10, { 
           filter: `status="published"`,
           sort: "-created"
