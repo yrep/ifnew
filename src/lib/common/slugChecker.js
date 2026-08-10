@@ -9,6 +9,11 @@ export function normalizeSlug(slug, type = "default") {
     return `/news/${clean}/`;
   }
 
+  if (type === "articles" || type === "stati") {
+    if (clean.startsWith("stati/")) return `/${clean}/`;
+    return `/stati/${clean}/`;
+  }
+
   if (type === "product") {
     if (clean.startsWith("produkciya/")) return `/${clean}/`;
     return `/produkciya/${clean}/`;
