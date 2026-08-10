@@ -193,6 +193,8 @@ function formatEntityResponse(entity, type) {
       alt: getAltText(entity, ["heading", "name", "meta_title", "title"]),
       raw: entity,
       isEntity: true,
+      source_name: entity.source_name || null,
+      source_url: entity.source_url || null,
     },
     beforeContent: [],
     betweenContent: [],
