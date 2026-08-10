@@ -11,6 +11,7 @@ export const sectionComponents = {
   hero: HeroSection,
   products: ProductsSection,
   news: NewsSection,
+  articles: NewsSection,
   contacts: ContactsSection,
   partners: PartnersSection,
   form: UniversalFormSection,
