@@ -9,7 +9,8 @@ export function normalizeSlug(slug, type = "default") {
     return `/news/${clean}/`;
   }
 
-  if (type === "articles" || type === "stati") {
+  if (type === "articles") {
+    clean = clean.replace(/^news\//, ''); 
     if (clean.startsWith("stati/")) return `/${clean}/`;
     return `/stati/${clean}/`;
   }

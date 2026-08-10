@@ -37,8 +37,8 @@
         </div>
       </div>
 
-    {:else if type === 'news'}
-      <a href={normalizeSlug(item.slug, 'news')} class="card bg-white shadow-sm hover:shadow-md transition-shadow border border-base-200 flex-row overflow-hidden">
+     {:else if type === 'news' || type === 'articles'}
+      <a href={normalizeSlug(item.slug, type)} class="card bg-white shadow-sm hover:shadow-md transition-shadow border border-base-200 flex-row overflow-hidden">
         {#if item.image}
           <figure class="w-1/3 sm:w-1/4 h-full min-h-[140px] bg-base-200">
             <Image 
