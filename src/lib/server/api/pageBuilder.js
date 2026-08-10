@@ -128,6 +128,18 @@ async function formatPageResponse(page, currentPage, categorySlug = null) {
           alt: getAltText(item, ["heading", "title"])
         }));
         sectionData.totalPages = Math.ceil(result.totalItems / 6);
+      } } else if (sectionDef.type === "articles") {
+        const result = await pb.collection("articles").getList(currentPage, 10, { 
+          filter: `status="published"`,
+          sort: "-created"
+        });
+        sectionData.items = result.items.map(item => ({ 
+          ...item, 
+          image: getFullFileUrl(item, "image"),
+          alt: getAltText(item, ["heading", "title"])
+        }));
+        sectionData.totalPages = Math.ceil(result.totalItems / 10);
+        
       } else if (sectionDef.type === "partners") {
         const items = await pb.collection("section_items_partners").getFullList({ 
           sort: "created" 
