@@ -4,6 +4,8 @@
 
   let { items } = $props();
 
+  const itemClass = "badge bg-white text-base-content border border-base-200 hover:bg-accent hover:text-accent-content hover:border-accent transition-colors cursor-pointer text-sm font-medium px-4 h-14 flex items-center justify-center text-center leading-snug";
+
   const { products, categories } = $derived.by(() => {
     const prods = [];
     const cats = new Map();

@@ -49,7 +49,7 @@
       </div>
     {/if}
 
-   {:else if isGridMode}
+  {:else if isGridMode}
     <ProductsGrid items={items} />
 
   {:else if isListMode}
