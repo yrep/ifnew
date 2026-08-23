@@ -8,7 +8,7 @@
 </script>
 
 <ul class="flex flex-col gap-2 w-full">
-  {#each items as item}
+  {#each sortedItems as item}
     <li class="bg-white border border-gray-200 rounded hover:bg-gray-50 transition-colors">
       <a 
         href={normalizeSlug(item.slug, 'product')} 
@@ -25,7 +25,7 @@
     </li>
   {/each}
   
-  {#if items.length === 0}
+  {#if sortedItems.length === 0}
     <li class="text-center py-8 text-base-content/60 bg-white border border-gray-200 rounded">
       В этой категории пока нет товаров.
     </li>
