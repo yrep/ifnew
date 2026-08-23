@@ -2,6 +2,7 @@
   import ProductCard from './Cards/ProductCard.svelte';
   import CategoryCard from './Cards/CategoryCard.svelte';
   import { normalizeSlug } from '$lib/common/slugChecker.js';
+  import { sortProductsByOrder } from '$lib/common/productSort.js';
 
   let { items } = $props();
 
@@ -21,7 +22,18 @@
         prods.push(item);
       }
     }
-    return { products: prods, categories: Array.from(cats.entries()) };
+
+    const sortedProds = sortProductsByOrder(prods);
+
+    const sortedCats = new Map();
+    for (const [name, group] of cats.entries()) {
+      sortedCats.set(name, {
+        ...group,
+        items: sortProductsByOrder(group.items)
+      });
+    }
+
+    return { products: sortedProds, categories: Array.from(sortedCats.entries()) };
   });
 
   const gridItems = $derived([

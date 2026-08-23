@@ -1,7 +1,10 @@
 <script>
   import { normalizeSlug } from '$lib/common/slugChecker.js';
+  import { sortProductsByOrder } from '$lib/common/productSort.js';
 
   let { items } = $props();
+
+  const sortedItems = $derived(sortProductsByOrder(items));
 </script>
 
 <ul class="flex flex-col gap-2 w-full">

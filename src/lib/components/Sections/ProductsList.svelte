@@ -1,9 +1,8 @@
 <script>
   import { normalizeSlug } from '$lib/common/slugChecker.js';
+  import { sortProductsByOrder } from '$lib/common/productSort.js';
 
   let { items } = $props();
-
-  const itemClass = "badge bg-white text-base-content border border-base-200 hover:bg-accent hover:text-accent-content hover:border-accent transition-colors cursor-pointer text-sm font-medium px-4 h-14 flex items-center justify-center text-center leading-snug";
 
   const { products, categories } = $derived.by(() => {
     const prods = [];
@@ -21,7 +20,18 @@
         prods.push(item);
       }
     }
-    return { products: prods, categories: Array.from(cats.entries()) };
+
+    const sortedProds = sortProductsByOrder(prods);
+
+    const sortedCats = new Map();
+    for (const [name, group] of cats.entries()) {
+      sortedCats.set(name, {
+        ...group,
+        items: sortProductsByOrder(group.items)
+      });
+    }
+
+    return { products: sortedProds, categories: Array.from(sortedCats.entries()) };
   });
 </script>
 
