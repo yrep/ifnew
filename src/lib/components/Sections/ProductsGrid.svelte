@@ -12,10 +12,10 @@
 
     for (const item of items) {
       if (item.category) {
-        const catName = item.category.name || 'Unknown';
-        const catSlug = item.category.slug || '';
+        const cat = item.category;
+        const catName = cat.name || 'Unknown';
         if (!cats.has(catName)) {
-          cats.set(catName, { slug: catSlug, items: [] });
+          cats.set(catName, { ...cat, items: [] });
         }
         cats.get(catName).items.push(item);
       } else {
@@ -25,20 +25,24 @@
 
     const sortedProds = sortProductsByOrder(prods);
 
-    const sortedCats = new Map();
-    for (const [name, group] of cats.entries()) {
-      sortedCats.set(name, {
-        ...group,
-        items: sortProductsByOrder(group.items)
-      });
-    }
+    const categoriesArray = Array.from(cats.entries()).map(([name, group]) => ({
+      name,
+      ...group,
+      items: sortProductsByOrder(group.items),
+    }));
 
-    return { products: sortedProds, categories: Array.from(sortedCats.entries()) };
+    categoriesArray.sort((a, b) => {
+      const aOrder = a.order || 0;
+      const bOrder = b.order || 0;
+      return aOrder - bOrder;
+    });
+
+    return { products: sortedProds, categories: categoriesArray };
   });
 
   const gridItems = $derived([
     ...products.map(p => ({ type: 'product', item: p })),
-    ...categories.map(([name, group]) => ({ type: 'category', name, ...group }))
+    ...categories.map(cat => ({ type: 'category', category: cat })),
   ]);
 </script>
 
@@ -47,7 +51,7 @@
     {#if entry.type === 'product'}
       <ProductCard item={entry.item} />
     {:else}
-      <CategoryCard category={{ name: entry.name, slug: entry.slug }} items={entry.items} maxVisible={5} />
+      <CategoryCard category={entry.category} />
     {/if}
   {/each}
 </div>

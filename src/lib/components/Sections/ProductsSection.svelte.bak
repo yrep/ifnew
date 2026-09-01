@@ -15,7 +15,7 @@
 
   const isListMode = $derived(sectionCode === 'products_list_main');
   const isGridMode = $derived(sectionCode === 'products_grid_main');
-  const isSimpleListMode = $derived(sectionCode === 'products_simple_list');
+
 </script>
 
 <section class="py-2 w-full">
@@ -48,9 +48,6 @@
         <CategoryProductList items={items} />
       </div>
     {/if}
-
-  {:else if isSimpleListMode}
-    <CategoryProductList items={items} />
 
   {:else if isGridMode}
     <ProductsGrid items={items} />
