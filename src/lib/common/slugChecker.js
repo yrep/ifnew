@@ -20,5 +20,9 @@ export function normalizeSlug(slug, type = "default") {
     return `/produkciya/${clean}/`;
   }
 
+  if (type === "category") {
+    return `/${clean}/`;
+  }
+
   return `/${clean}/`;
 }
