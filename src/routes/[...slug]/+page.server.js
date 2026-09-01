@@ -2,6 +2,7 @@ import { error } from "@sveltejs/kit";
 import PocketBase from "pocketbase";
 import { config } from "$lib/common/config.js";
 import { buildPage } from "$lib/server/api/pageBuilder.js";
+import { getFullFileUrl } from "$lib/common/fileUtils.js";
 import { dlog } from "$lib/common/dlog.js";
 
 export const load = async ({ params, url }) => {
@@ -24,9 +25,7 @@ export const load = async ({ params, url }) => {
 
     const pb = new PocketBase(config.pocketbase.url);
     try {
-      const category = await pb.collection("categories").getFirstListItem(`slug="${clean}"`);
-      if (!category) throw new Error("Category not found");
-
+      const category = await pb.collection("product_categories").getFirstListItem(`slug="${clean}"`);
       const products = await pb.collection("products").getFullList({
         filter: `category = "${category.id}"`,
         sort: "order,updated",
@@ -52,9 +51,9 @@ export const load = async ({ params, url }) => {
         page: {
           title: category.name,
           html: category.description || "",
-          image: category.image || null,
+          image: category.image ? getFullFileUrl({ ...category, collectionName: 'product_categories' }, 'image') : null,
           alt: category.image_alt || category.name,
-          raw: { collectionName: "categories", ...category },
+          raw: { collectionName: "product_categories", ...category },
           display_date: null,
         },
         beforeContent: [],
