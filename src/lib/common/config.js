@@ -1,5 +1,3 @@
-// src/lib/common/config.js
-
 export const config = {
   pocketbase: { 
     url: import.meta.env.VITE_POCKETBASE_API_BASE_URL || "http://127.0.0.1:8090",
@@ -24,13 +22,10 @@ export const config = {
             { slug: '/company/', title: 'О компании' },
             { slug: '/produkciya/', title: 'Продукция' },
             { slug: '/partnery/', title: 'Партнеры' },
-            { slug: '/news/', title: 'Новости' },
-            { slug: '/stati/', title: 'Статьи' },
           ],
           [
-            { slug: '/otzyvy/', title: 'Отзывы' },
-            { slug: '/zayavka-na-postavku/', title: 'Заявка на поставку' },
-            { slug: '/obratnyj-zvonok/', title: 'Обратный звонок' },
+            { slug: '/news/', title: 'Новости' },
+            { slug: '/stati/', title: 'Статьи' },
             { slug: '/sitemap/', title: 'Карта сайта' },
           ]
         ]

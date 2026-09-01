@@ -34,5 +34,8 @@
     <h3 class="card-title text-sm text-primary group-hover:text-accent transition-colors line-clamp-2 min-h-[2.5rem]">
       {category?.name || 'Категория'}
     </h3>
+    {#if category?.excerpt}
+      <p class="text-xs text-base-content/70 line-clamp-2 mt-1 flex-1">{category.excerpt}</p>
+    {/if}
   </div>
 </a>

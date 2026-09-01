@@ -1,9 +1,10 @@
-<!-- src/lib/components/Sections/UniversalFormSection.svelte -->
 <script>
   import { dlog } from '$lib/common/dlog.js';
 
   let { section } = $props();
   
+  const formsDisabled = true;
+
   const formCode = $derived(section.expand?.section?.code || 'form_request');
 
   const formConfigs = {
@@ -49,7 +50,7 @@
     city: ''
   });
 
-  let status = $state('idle'); // idle, submitting, success, error
+  let status = $state('idle');
   let responseMsg = $state('');
 
   function validateForm() {
@@ -108,7 +109,6 @@
         responseMsg = data.message || 'Ваше обращение успешно отправлено! Мы свяжемся с вами в ближайшее время.';
       }
       
-      // clear the form
       formData = { company_name: '', contact_name: '', phone: '', email: '', text: '', city: '' };
     } catch (err) {
       status = 'error';
@@ -128,59 +128,70 @@
     </div>
   {/if}
 
+  {#if formsDisabled}
+    <div class="mx-auto max-w-2xl rounded-box border border-base-200 bg-white p-6 shadow-sm text-center">
+      <h3 class="mb-4 text-2xl font-bold">Извините, форма для связи больше недоступна.</h3>
+      <p class="mb-6 text-base-content/80">
+        Вы можете связаться с нами любым удобным для вас способом: 
+        <a href="/contacts/" class="link link-primary font-semibold">перейти в контакты</a>.
+      </p>
+      <p class="text-base-content/70">Мы обязательно ответим вам.</p>
+    </div>
+  {:else}
     <div class="mx-auto max-w-2xl rounded-box border border-base-200 bg-white p-6 shadow-sm">
-    {#if section.expand?.section?.show_heading_excerpt}
-      <h3 class="mb-6 text-2xl font-bold text-center">{config.title}</h3>
-    {/if}
+      {#if section.expand?.section?.show_heading_excerpt}
+        <h3 class="mb-6 text-2xl font-bold text-center">{config.title}</h3>
+      {/if}
 
-    {#if status === 'success'}
-      <div class="alert alert-success mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <span>{responseMsg}</span>
-      </div>
-    {:else if status === 'error'}
-      <div class="alert alert-error mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <span>{responseMsg}</span>
-      </div>
-    {/if}
+      {#if status === 'success'}
+        <div class="alert alert-success mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>{responseMsg}</span>
+        </div>
+      {:else if status === 'error'}
+        <div class="alert alert-error mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>{responseMsg}</span>
+        </div>
+      {/if}
 
-    <form class="flex flex-col gap-5" onsubmit={handleSubmit}>
-      {#each config.fields as field}
-        <label class="form-control w-full">
-          <span class="label-text mb-1">
-            {field.label}
-            {#if field.required}
-              <span class="text-error">*</span>
+      <form class="flex flex-col gap-5" onsubmit={handleSubmit}>
+        {#each config.fields as field}
+          <label class="form-control w-full">
+            <span class="label-text mb-1">
+              {field.label}
+              {#if field.required}
+                <span class="text-error">*</span>
+              {/if}
+            </span>
+            
+            {#if field.type === 'textarea'}
+              <textarea 
+                class="textarea textarea-bordered w-full" 
+                rows="4" 
+                bind:value={formData[field.name]}
+                placeholder="Введите текст..."
+              ></textarea>
+            {:else}
+              <input 
+                type={field.type} 
+                class="input input-bordered w-full" 
+                bind:value={formData[field.name]}
+                placeholder="Введите данные..."
+              />
             {/if}
-          </span>
-          
-          {#if field.type === 'textarea'}
-            <textarea 
-              class="textarea textarea-bordered w-full" 
-              rows="4" 
-              bind:value={formData[field.name]}
-              placeholder="Введите текст..."
-            ></textarea>
-          {:else}
-            <input 
-              type={field.type} 
-              class="input input-bordered w-full" 
-              bind:value={formData[field.name]}
-              placeholder="Введите данные..."
-            />
-          {/if}
-        </label>
-      {/each}
+          </label>
+        {/each}
 
-      <button type="submit" class="btn btn-primary mt-2" disabled={status === 'submitting'}>
-        {#if status === 'submitting'}
-          <span class="loading loading-spinner"></span>
-          Отправка...
-        {:else}
-          Отправить
-        {/if}
-      </button>
-    </form>
-  </div>
+        <button type="submit" class="btn btn-primary mt-2" disabled={status === 'submitting'}>
+          {#if status === 'submitting'}
+            <span class="loading loading-spinner"></span>
+            Отправка...
+          {:else}
+            Отправить
+          {/if}
+        </button>
+      </form>
+    </div>
+  {/if}
 </section>
