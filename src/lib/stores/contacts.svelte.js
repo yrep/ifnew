@@ -1,13 +1,13 @@
+// src/lib/stores/contacts.svelte.js
 import { fetchPage } from "$lib/frontend/api/pages.js";
 
-export const contacts = $state({
+export const contactsStore = $state({
   address: '',
   phone: '',
-  email: ''
+  email: '',
+  loaded: false,
+  loading: false
 });
-
-export let loaded = $state(false);
-export let loading = $state(false);
 
 function findContactsSection(pageData) {
   const allSections = [
@@ -19,22 +19,22 @@ function findContactsSection(pageData) {
 }
 
 export async function loadContacts() {
-  if (loading || loaded) return;
+  if (contactsStore.loading || contactsStore.loaded) return;
   
-  loading = true;
+  contactsStore.loading = true;
   try {
     const pageData = await fetchPage({ slug: 'contacts' });
     const section = findContactsSection(pageData);
     
     if (section?.parsedData) {
-      contacts.address = section.parsedData.office_address || '';
-      contacts.phone = section.parsedData.phone || '';
-      contacts.email = section.parsedData.email || '';
-      loaded = true;
+      contactsStore.address = section.parsedData.office_address || '';
+      contactsStore.phone = section.parsedData.phone || '';
+      contactsStore.email = section.parsedData.email || '';
+      contactsStore.loaded = true;
     }
   } catch (err) {
     console.error('Failed to load contacts for footer:', err);
   } finally {
-    loading = false;
+    contactsStore.loading = false;
   }
 }
