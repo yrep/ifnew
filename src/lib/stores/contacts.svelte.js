@@ -1,5 +1,6 @@
 // src/lib/stores/contacts.svelte.js
-import { fetchPage } from "$lib/frontend/api/pages.js";
+import { config } from "$lib/common/config.js";
+import { parseCsvData } from "$lib/common/csvParser.js";
 
 export const contactsStore = $state({
   address: '',
@@ -9,31 +10,30 @@ export const contactsStore = $state({
   loading: false
 });
 
-function findContactsSection(pageData) {
-  const allSections = [
-    ...(pageData.beforeContent || []),
-    ...(pageData.betweenContent || []),
-    ...(pageData.afterContent || [])
-  ];
-  return allSections.find(s => s.expand?.section?.type === 'contacts');
-}
-
 export async function loadContacts() {
   if (contactsStore.loading || contactsStore.loaded) return;
   
   contactsStore.loading = true;
   try {
-    const pageData = await fetchPage({ slug: 'contacts' });
-    const section = findContactsSection(pageData);
+    const url = `${config.pocketbase.url}/api/collections/sections/records?filter=(code='contacts_main')&limit=1`;
+    const res = await fetch(url);
     
-    if (section?.parsedData) {
-      contactsStore.address = section.parsedData.office_address || '';
-      contactsStore.phone = section.parsedData.phone || '';
-      contactsStore.email = section.parsedData.email || '';
+    if (!res.ok) {
+      throw new Error(`PocketBase error: ${res.status}`);
+    }
+    
+    const data = await res.json();
+    const record = data.items?.[0];
+    
+    if (record?.data_fields) {
+      const parsed = parseCsvData(record.data_fields);
+      contactsStore.address = parsed.office_address || '';
+      contactsStore.phone = parsed.phone || '';
+      contactsStore.email = parsed.email || '';
       contactsStore.loaded = true;
     }
   } catch (err) {
-    console.error('Failed to load contacts for footer:', err);
+    console.error('Не удалось загрузить контакты для футера:', err);
   } finally {
     contactsStore.loading = false;
   }
