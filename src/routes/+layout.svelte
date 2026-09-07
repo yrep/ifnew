@@ -4,8 +4,14 @@
   import Header from "$lib/components/Header/Header.svelte";
   import Footer from "$lib/components/Footer/Footer.svelte";
   import { theme, applyTheme } from "$lib/stores/theme.svelte.js";
+  import { onMount } from 'svelte';
+  import { loadContacts } from "$lib/stores/contacts.svelte.js";
 
   let { children } = $props();
+
+  onMount(() => {
+    loadContacts();
+  });
 
   $effect(() => {
     applyTheme(theme.current);
