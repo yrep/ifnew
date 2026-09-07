@@ -1,10 +1,10 @@
-<!-- src/lib/components/Footer/Footer.svelte -->
 <script>
   import NavFooter from "./NavFooter.svelte";
   import ContactsFooter from "./ContactsFooter.svelte";
   import Copyright from "./Copyright.svelte";
   import { config } from "$lib/common/config.js";
 
+  let { contacts = { address: '', phone: '', email: '' } } = $props();
   const groups = config.settings.menu.footer.groups;
 </script>
 
@@ -13,7 +13,7 @@
     <div class="md:col-span-2">
       <NavFooter {groups} />
     </div>
-    <ContactsFooter />
+    <ContactsFooter {contacts} />
   </div>
   <Copyright />
 </footer>
