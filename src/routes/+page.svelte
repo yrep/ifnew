@@ -4,8 +4,6 @@
   import { dlog } from '$lib/common/dlog.js';
   
   let { data } = $props();
-  
-  dlog('Main Page data loaded:', data);
 
   const page = data.pageData?.page || {};
   const raw = page.raw || {};
